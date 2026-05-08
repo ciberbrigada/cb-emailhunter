@@ -5,6 +5,7 @@
   <img src="https://img.shields.io/badge/python-3.8+-blue?style=for-the-badge&logo=python&logoColor=white"/>
   <img src="https://img.shields.io/badge/OSINT-Email-orange?style=for-the-badge"/>
   <img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/free-sin%20API%20key-brightgreen?style=for-the-badge"/>
 </p>
 
 <p align="center">
@@ -30,35 +31,21 @@ CB-EmailHunter analiza un email en múltiples fuentes abiertas y gratuitas para 
 
 ---
 
-## Módulos
-
-| # | Módulo | Fuente | Descripción |
-|---|--------|--------|-------------|
-| 1 | SMTP Verify | Directo al servidor | Verifica si el email existe en el servidor de correo |
-| 2 | EmailRep.io | emailrep.io | Reputación, blacklists, historial de actividad |
-| 3 | HudsonRock | cavalier.hudsonrock.com | Credenciales robadas por infostealers |
-| 4 | BreachDirectory | breachdirectory.com | Filtraciones y leaks públicos |
-| 5 | Gravatar | gravatar.com | Foto de perfil, nombre, redes sociales asociadas |
-| 6 | Google Dorks | Google | Links de búsqueda automáticos para OSINT manual |
-| 7 | Domain Info | DNS + WHOIS | Información del dominio del proveedor de email |
-
----
-
 ## Instalación
 
 ```bash
-# Clonar el repositorio
+# 1. Clonar el repositorio
 git clone https://github.com/ciberbrigada/cb-emailhunter
 cd cb-emailhunter
 
-# Instalar dependencias
+# 2. Instalar dependencias
 pip install -r requirements.txt
 
-# Ejecutar
+# 3. Ejecutar
 python3 cb_email_hunter.py
 ```
 
-### Kali Linux / Parrot OS
+### Kali Linux / Parrot OS / Ubuntu
 
 ```bash
 git clone https://github.com/ciberbrigada/cb-emailhunter
@@ -78,9 +65,22 @@ python cb_email_hunter.py
 
 ---
 
+## 🔄 Mantener actualizado
+
+Para tener siempre la última versión con las mejoras y correcciones:
+
+```bash
+cd cb-emailhunter
+git pull
+```
+
+Ejecutá `git pull` cada vez que quieras actualizar. Siempre vas a tener la versión más reciente del repositorio.
+
+---
+
 ## Uso
 
-```
+```bash
 python3 cb_email_hunter.py
 ```
 
@@ -92,16 +92,30 @@ python3 cb_email_hunter.py
 ▸ Email: ejemplo@gmail.com
 
 [0] TODOS LOS MÓDULOS
-[1] SMTP Verify
-[2] EmailRep.io
-[3] HudsonRock
-[4] BreachDirectory
-[5] Gravatar
-[6] Google Dorks
-[7] Domain Info
+[1] SMTP Verify        — ¿Existe el email?
+[2] EmailRep.io        — Reputación y score
+[3] HudsonRock         — Infostealers
+[4] Breach Check       — Leaks públicos
+[5] Gravatar           — Perfil asociado
+[6] Google Dorks       — Links de búsqueda
+[7] Domain Info        — Info del dominio
 
 ▸ Opción: 0
 ```
+
+---
+
+## Módulos
+
+| # | Módulo | Fuente | Descripción |
+|---|--------|--------|-------------|
+| 1 | SMTP Verify | Directo al servidor | Verifica si el email existe en el servidor de correo |
+| 2 | EmailRep.io | emailrep.io | Reputación, blacklists, historial de actividad |
+| 3 | HudsonRock | cavalier.hudsonrock.com | Credenciales robadas por infostealers |
+| 4 | Breach Check | ProxyNova + HIBP | Filtraciones y leaks públicos |
+| 5 | Gravatar | gravatar.com | Foto de perfil, nombre, redes sociales asociadas |
+| 6 | Google Dorks | Google | Links de búsqueda automáticos para OSINT manual |
+| 7 | Domain Info | DNS + WHOIS | Información del dominio del proveedor de email |
 
 ---
 
@@ -136,7 +150,7 @@ Más herramientas en desarrollo:
 ---
 
 <p align="center">
-  <a href="https://ciberbrigada.com">ciberbrigada.com</a> · 
+  <a href="https://ciberbrigada.com">ciberbrigada.com</a> ·
   <a href="https://github.com/ciberbrigada">GitHub</a> ·
   <a href="https://www.linkedin.com/company/ciberbrigada/">LinkedIn</a>
   <br/><br/>
