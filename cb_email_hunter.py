@@ -51,51 +51,48 @@ def banner():
     ORAN  = '\033[38;5;208m'
     DIM   = '\033[2m\033[37m'
     BOLD  = '\033[1m'
+    YEL   = '\033[33m'
     RST   = '\033[0m'
 
-    # Logo CB en ASCII — generado desde logo oficial Ciberbrigada
+    # Logo CB — compacto, denso, elegante
+    # Lado izquierdo (águila + C) = CYAN | Lado derecho (B + circuitos) = NARANJA
     logo = [
-        "                   ··::;;;:::·                         ",
-        "                .·..··:;+++·.;;··                      ",
-        "              ··  .·:;;++++······:    ..               ",
-        "           .:+·.·;++++++++:.  ··:;::····.······        ",
-        "          ·++..::+++++++;     :::::;:::·:;:.  .        ",
-        "         ·++. ..:+++++++:    .+++++++++++++;:.         ",
-        "      .. ;+; ·;+++;::::;:    .++++:::::::;++++:        ",
-        "      ;  ++::++;·            .++++        ·+++=·       ",
-        "     ·+  +++++·              .++++         +++=:       ",
-        "     ·+: ;+++:               .++++       .;+==+        ",
-        "     .++. +++.               .+++++++++++====;         ",
-        "      :++..++·               ·=++============+:.       ",
-        "    ·· :++::++.              ·===+........·:==xx;      ",
-        "     ;: .;=++++:.            ·===+          .===x:     ",
-        "      ;+· .:;+===+;::::;;    ·====          ·===x;     ",
-        "       ·++:...··:;++===x+    ·====.       .:=====.     ",
-        "      ·· .:+++;:::;;;+===;.  ·x================;.      ",
-        "       ·;:.  .:==;=x+·;====;:.::;+++====++++;:.        ",
-        "        .;==+· ·x;.;x=··;==;;;::··..........           ",
-        "          .;=x: :x; ·=x+..:;+;::··········.            ",
-        "             :+· :x=· ·+=+:..·:;;;:::··..              ",
-        "               .  .+=+· .:+++:··.....                  ",
+        "              ...::::...               ",
+        "              ..:::+: ....             ",
+        "        .:...:::::::.  ..:....... ..   ",
+        "       :+  .:::::::    ::::::::::.     ",
+        "      .+. .::::::::    +::::::::++::   ",
+        "    . ::.:+:.          :::       ::+:  ",
+        "   .: :::+.            +:+       .+++  ",
+        "   .+ .+::             +:+.    .:+++.  ",
+        "    +: :+.             ++++++++++++:   ",
+        "     +:.:+             +++:......:+++: ",
+        "   :. :++++.           +++         ++%:",
+        "    ::  .::+++:::::    +++        .++%:",
+        "     .:::....::++++   .+++:.....::+++: ",
+        "    ... ..:+::+::+++:. ::++++++++++:.  ",
+        "      :+:. :+.:+:.:++::......  ...     ",
+        "        :+: :+..++...::::.......        ",
+        "          .. :+:..:+:.........          ",
     ]
 
-    # Mitad izquierda cyan, mitad derecha naranja
+    # Split por mitad para colorear cyan/naranja
     print()
     for line in logo:
         mid = len(line) // 2
-        print(f"  {CYAN}{line[:mid]}{ORAN}{line[mid:]}{RST}")
+        print(f"       {CYAN}{BOLD}{line[:mid]}{ORAN}{line[mid:]}{RST}")
 
-    print(f"""
-{CYAN}{BOLD}              Ciber{ORAN}{BOLD}brigada{RST}{CYAN} OSINT Suite{RST}
-{DIM}           ─────────────────────────────────{RST}
-{BOLD}       ╔═══════════════════════════════════════╗
-       ║   📧  CB-EMAILHUNTER  v1.0             ║
-       ║   Email OSINT & Breach Intelligence    ║
-       ╚═══════════════════════════════════════╝{RST}
-{DIM}       [ ciberbrigada.com ]  [ OSINT Suite ]{RST}
-{DIM}                                   by: Fgunther{RST}
-{'\033[33m'}  ⚠  Solo para uso legal, ético y educativo  ⚠{RST}
-""")
+    # Crédito debajo del ASCII
+    print(f"                          {DIM}by: Fgunther{RST}")
+    print()
+    print(f"  {CYAN}{BOLD}Ciber{ORAN}brigada{RST} {CYAN}OSINT Suite{RST}  {DIM}─────────────────────{RST}")
+    print(f"  {BOLD}╔══════════════════════════════════════════╗{RST}")
+    print(f"  {BOLD}║  📧  CB-EMAILHUNTER  v1.0               ║{RST}")
+    print(f"  {BOLD}║  Email OSINT & Breach Intelligence      ║{RST}")
+    print(f"  {BOLD}╚══════════════════════════════════════════╝{RST}")
+    print(f"  {DIM}[ ciberbrigada.com ]  [ OSINT Suite ]{RST}")
+    print(f"  {YEL}⚠  Solo para uso legal, ético y educativo  ⚠{RST}")
+    print()
 
 def separador(titulo=""):
     if titulo:
@@ -170,102 +167,164 @@ def emailrep(email):
     separador("EMAILREP.IO — Reputación")
     try:
         r = requests.get(
-            f"https://emailrep.io/{email}",
-            headers={**HEADERS, "Accept": "application/json"},
+            f"https://emailrep.io/{urllib.parse.quote(email)}",
+            headers={
+                "User-Agent": "cb-emailhunter/1.0",
+                "Accept": "application/json",
+            },
             timeout=10
         )
         if r.status_code == 200:
             d = r.json()
             dato("Reputación",        d.get("reputation", "—").upper())
-            dato("Suspicious",        "SÍ" if d.get("suspicious") else "NO")
+            dato("Suspicious",        "SÍ ⚠" if d.get("suspicious") else "NO")
             dato("Referencias",       str(d.get("references", 0)))
 
             details = d.get("details", {})
-            dato("Blacklisted",       "SÍ" if details.get("blacklisted") else "NO")
-            dato("Malicious activity","SÍ" if details.get("malicious_activity") else "NO")
-            dato("Credenciales exp.", "SÍ" if details.get("credentials_leaked") else "NO")
-            dato("Data breach",       "SÍ" if details.get("data_breach") else "NO")
+            dato("Blacklisted",       "SÍ ⚠" if details.get("blacklisted") else "NO")
+            dato("Malicious activity","SÍ ⚠" if details.get("malicious_activity") else "NO")
+            dato("Credenciales exp.", "SÍ ⚠" if details.get("credentials_leaked") else "NO")
+            dato("Data breach",       "SÍ ⚠" if details.get("data_breach") else "NO")
             dato("Primer visto",      details.get("first_seen", "—"))
             dato("Último visto",      details.get("last_seen", "—"))
-            dato("Dominios",          str(details.get("domain_exists", "—")))
             dato("SPF",               "SÍ" if details.get("spf_strict") else "NO")
             dato("DMARC",             "SÍ" if details.get("dmarc_enforced") else "NO")
             dato("Deliverable",       "SÍ" if details.get("deliverable") else "NO")
             dato("Free provider",     "SÍ" if details.get("free_provider") else "NO")
-            dato("Disposable",        "SÍ" if details.get("disposable") else "NO")
-            dato("Profiles",          ", ".join(details.get("profiles", [])) or "—")
+            dato("Disposable",        "SÍ ⚠" if details.get("disposable") else "NO")
+            profiles = details.get("profiles", [])
+            if profiles:
+                dato("Perfiles encontrados", ", ".join(profiles))
             if details.get("data_breach"):
                 ok("⚠  Email encontrado en filtraciones de datos")
         elif r.status_code == 429:
-            warn("Rate limit alcanzado en EmailRep.io")
+            warn("Rate limit en EmailRep.io — esperá unos minutos y reintentá")
+            info("Verificación manual: https://emailrep.io/" + email)
+        elif r.status_code == 400:
+            warn("EmailRep no pudo procesar este email")
         else:
             warn(f"EmailRep respondió con código {r.status_code}")
+    except requests.exceptions.Timeout:
+        warn("EmailRep.io no respondió (timeout)")
     except Exception as e:
-        fail(f"Error en EmailRep: {e}")
+        fail(f"Error en EmailRep: {type(e).__name__}")
 
 # ══════════════════════════════════════════════════════════════════════════════
 # MÓDULO 3 — HUDSONROCK (Infostealers / Credenciales robadas)
 # ══════════════════════════════════════════════════════════════════════════════
 def hudsonrock(email):
     separador("HUDSONROCK — Infostealers")
+    # Endpoint actualizado 2025
+    endpoints = [
+        f"https://cavalier.hudsonrock.com/api/json/v2/osint-tools/search-by-login?login={urllib.parse.quote(email)}",
+        f"https://cavalier.hudsonrock.com/api/json/v2/osint-tools/check-email?email={urllib.parse.quote(email)}",
+    ]
+    success = False
+    for url in endpoints:
+        try:
+            r = requests.get(url, headers={
+                **HEADERS,
+                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) Chrome/124.0.0.0 Safari/537.36",
+            }, timeout=12)
+            if r.status_code == 200:
+                d = r.json()
+                stealers = d.get("stealers", []) or d.get("data", [])
+                if stealers:
+                    ok(f"¡ALERTA! Email en {len(stealers)} registros de infostealers")
+                    for i, s in enumerate(stealers[:5], 1):
+                        print(f"\n  {R}{B}  [Registro #{i}]{RS}")
+                        dato("  Fecha",        s.get("date_uploaded", s.get("date", "—")))
+                        dato("  Stealer",      s.get("stealer_family", s.get("malware", "—")))
+                        dato("  OS",           s.get("operating_system", s.get("os", "—")))
+                        dato("  Contraseña",   s.get("password", "—"))
+                        dato("  URL",          s.get("url", "—"))
+                    if len(stealers) > 5:
+                        warn(f"  ... y {len(stealers) - 5} registros más")
+                else:
+                    ok("No encontrado en bases de infostealers de HudsonRock")
+                success = True
+                break
+            elif r.status_code == 429:
+                warn("Rate limit en HudsonRock — intentá en unos minutos")
+                success = True
+                break
+        except Exception:
+            continue
+
+    if not success:
+        # Fallback: búsqueda manual via web
+        warn("HudsonRock API no disponible — verificá manualmente:")
+        url_manual = f"https://cavalier.hudsonrock.com/search?query={urllib.parse.quote(email)}"
+        dato("  URL manual", url_manual)
+
+# ══════════════════════════════════════════════════════════════════════════════
+# MÓDULO 4 — BREACH CHECK (Leaks públicos — múltiples fuentes)
+# ══════════════════════════════════════════════════════════════════════════════
+def breach_directory(email):
+    separador("BREACH CHECK — Leaks públicos")
+    domain = email.split("@")[1]
+    found_any = False
+
+    # Fuente 1: ProxyNova COMB (Collection Of Many Breaches)
     try:
         r = requests.get(
-            f"https://cavalier.hudsonrock.com/api/json/v2/osint-tools/search-by-login?login={urllib.parse.quote(email)}",
+            f"https://api.proxynova.com/comb?query={urllib.parse.quote(email)}&start=0&limit=10",
             headers=HEADERS, timeout=12
         )
         if r.status_code == 200:
             d = r.json()
-            stealers = d.get("stealers", [])
-            if stealers:
-                ok(f"¡ALERTA! Email encontrado en {len(stealers)} registros de infostealers")
-                for i, s in enumerate(stealers[:5], 1):
-                    print(f"\n  {R}{B}  [Registro #{i}]{RS}")
-                    dato("  Fecha",       s.get("date_uploaded", "—"))
-                    dato("  País víctima",s.get("computer_name", "—"))
-                    dato("  OS",          s.get("operating_system", "—"))
-                    dato("  Stealer",     s.get("stealer_family", "—"))
-                    dato("  Contraseña",  s.get("password", "—"))
-                    dato("  URL",         s.get("url", "—"))
-                if len(stealers) > 5:
-                    warn(f"  ... y {len(stealers) - 5} registros más")
+            lines = d.get("lines", [])
+            count = d.get("count", 0)
+            if lines:
+                ok(f"ProxyNova COMB: {count} registros encontrados")
+                for line in lines[:6]:
+                    parts = line.split(":")
+                    if len(parts) >= 2:
+                        passwd = ":".join(parts[1:])
+                        print(f"  {Y}  ▸{RS} {W}{parts[0]}{RS}  pass: {R}{passwd[:3]}***{RS}")
+                found_any = True
             else:
-                ok("No encontrado en bases de infostealers de HudsonRock")
+                ok("ProxyNova COMB: sin resultados")
         else:
-            warn(f"HudsonRock respondió con código {r.status_code}")
+            warn(f"ProxyNova respondió {r.status_code}")
     except Exception as e:
-        fail(f"Error en HudsonRock: {e}")
+        warn(f"ProxyNova no disponible: {type(e).__name__}")
 
-# ══════════════════════════════════════════════════════════════════════════════
-# MÓDULO 4 — BREACHDIRECTORY (Leaks públicos)
-# ══════════════════════════════════════════════════════════════════════════════
-def breach_directory(email):
-    separador("BREACHDIRECTORY — Leaks")
+    # Fuente 2: HIBP — lista de breaches del dominio (pública, sin key)
     try:
         r = requests.get(
-            f"https://breachdirectory.p.rapidapi.com/?func=auto&term={urllib.parse.quote(email)}",
-            headers={
-                **HEADERS,
-                "x-rapidapi-host": "breachdirectory.p.rapidapi.com",
-            },
+            "https://haveibeenpwned.com/api/v3/breaches",
+            headers={**HEADERS, "User-Agent": "cb-emailhunter/1.0"},
             timeout=10
         )
         if r.status_code == 200:
-            d = r.json()
-            if d.get("found"):
-                results = d.get("result", [])
-                ok(f"Email encontrado en {len(results)} filtraciones")
-                for item in results[:8]:
-                    src    = item.get("sources", ["—"])[0] if item.get("sources") else "—"
-                    passwd = item.get("password", "—")
-                    sha1   = item.get("sha1", "")
-                    print(f"  {Y}  ▸{RS} Fuente: {W}{src}{RS}  |  Pass: {R}{passwd[:3]}***{RS}" +
-                          (f"  SHA1: {D}{sha1[:12]}...{RS}" if sha1 else ""))
+            breaches = r.json()
+            # Filtrar breaches que incluyen el dominio del email
+            domain_breaches = [b for b in breaches if domain in b.get("Domain", "").lower()
+                              or domain.split(".")[0] in b.get("Name", "").lower()]
+            if domain_breaches:
+                ok(f"HIBP: dominio '{domain}' aparece en {len(domain_breaches)} breach(es) conocidos")
+                for b in domain_breaches[:3]:
+                    dato(f"  Breach", b.get("Name", "—"))
+                    dato(f"  Fecha",  b.get("BreachDate", "—"))
+                    dato(f"  Cuentas comprometidas", f"{b.get('PwnCount', 0):,}")
+                    tipos = ", ".join(b.get("DataClasses", [])[:4])
+                    dato(f"  Datos expuestos", tipos)
             else:
-                ok("No encontrado en BreachDirectory")
+                info(f"Dominio '{domain}' no aparece directamente en breaches de HIBP")
+            # Siempre informar que para verificar el email específico se necesita key
+            dato("  Verificar email en HIBP", f"https://haveibeenpwned.com/account/{urllib.parse.quote(email)}")
         else:
-            warn(f"BreachDirectory respondió con código {r.status_code}")
+            warn(f"HIBP respondió {r.status_code}")
     except Exception as e:
-        fail(f"Error en BreachDirectory: {e}")
+        warn(f"HIBP no disponible: {type(e).__name__}")
+
+    # Fuente 3: Link directo para verificación manual
+    print()
+    info("Links para verificación manual adicional:")
+    dato("  HIBP",          f"https://haveibeenpwned.com/account/{urllib.parse.quote(email)}")
+    dato("  LeakCheck",     f"https://leakcheck.io/?query={urllib.parse.quote(email)}")
+    dato("  DeHashed",      f"https://dehashed.com/search?query={urllib.parse.quote(email)}")
 
 # ══════════════════════════════════════════════════════════════════════════════
 # MÓDULO 5 — GRAVATAR (Perfil e imagen asociada)
